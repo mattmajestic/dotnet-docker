@@ -1,0 +1,7 @@
+
+services:
+  helloworld:
+    build: .
+    container_name: dotnet-docker
+    ports:
+      - "8000:80"
