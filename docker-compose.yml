@@ -1,6 +1,6 @@
 
 services:
-  helloworld:
+  dotnet-docker:
     build: .
     container_name: dotnet-docker
     ports:

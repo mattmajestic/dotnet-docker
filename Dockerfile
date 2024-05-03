@@ -1,20 +1,17 @@
-# Use the Microsoft's .NET SDK image to build the project
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+# Use the official .NET SDK image with .NET 8.0 support as a build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0.100 AS build
 WORKDIR /app
 
-# Copy the C# and .csproj files
-COPY Program.cs ./
-COPY Program.csproj ./
+# Copy csproj and restore as distinct layers
+COPY MyBlazorApp.csproj .
+RUN dotnet restore
 
-# Compile the project
-RUN dotnet publish -c Release -o out Program.csproj
+# Copy everything else and build the application
+COPY . .
+RUN dotnet publish -c Release -o out
 
-# Generate the runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+# Use the official ASP.NET Core runtime image for the final stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
-COPY --from=build-env /app/out .
-
-# Expose port 80
-EXPOSE 80
-
-ENTRYPOINT ["dotnet", "Program.dll"]
+COPY --from=build /app/out .
+ENTRYPOINT ["dotnet", "MyBlazorApp.dll"]
