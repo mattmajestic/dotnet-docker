@@ -5,7 +5,5 @@ WORKDIR /app
 # Copy the pre-built application
 COPY . .
 
-EXPOSE 5167
-
 # Set the entry point
 ENTRYPOINT ["dotnet", "run"]
